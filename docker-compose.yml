@@ -2,11 +2,10 @@ version: "3"
 services:
   nginx:
     build: ./service/nginx
-    depends_on:
-      - "php"
     ports: # 宿主机:容器
       - "${NGINX_HTTP_PORT}:80"
       - "${NGINX_HTTPS_PORT}:443"
+      - "81:81"
     volumes:
       - ${DIR_WWW}:/www
       - ${DIR_CONFIG}/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -15,16 +14,37 @@ services:
     restart: always
     container_name: nginx
 
-  php:
-    build: ./service/php
+  php72:
+    build:
+      context: ./service/php
+      args:
+        PHP_VERSION: php:${PHP72_VERSION}
+        PHP_EXTENSIONS: ${PHP72_EXTENSIONS}
     ports:
-      - "${PHP_FPM_PORT}:9000"
+      - "${PHP72_FPM_PORT}:9000"
     volumes:
       - ${DIR_WWW}:/www
       - ${DIR_CONFIG}/php/php.ini:/usr/local/etc/php/php.ini
       - ${DIR_CONFIG}/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
+      - ${DIR_LOG}/php:/var/log/php
     restart: always
-    container_name: php
+    container_name: php72
+
+  php56:
+    build:
+      context: ./service/php
+      args:
+        PHP_VERSION: php:${PHP56_VERSION}
+        PHP_EXTENSIONS: ${PHP56_EXTENSIONS}
+    ports:
+      - "${PHP56_FPM_PORT}:9000"
+    volumes:
+      - ${DIR_WWW}:/www
+      - ${DIR_CONFIG}/php/php.ini:/usr/local/etc/php/php.ini
+      - ${DIR_CONFIG}/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
+      - ${DIR_LOG}/php:/var/log/php
+    restart: always
+    container_name: php56
 
   mysql:
     build: ./service/mysql
