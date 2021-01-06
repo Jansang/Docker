@@ -1,5 +1,5 @@
 ARG VERSION
-FROM nginx:${VERSION}
+FROM redis:${VERSION}
 
 # 设置时区
 ARG TZ

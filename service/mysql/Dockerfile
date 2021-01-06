@@ -1,5 +1,6 @@
-FROM mysql:5.6
+ARG VERSION
+FROM mysql:${VERSION}
 
-#  set timezome
-ENV TZ=Asia/Shanghai
+# 设置时区
+ARG TZ
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
